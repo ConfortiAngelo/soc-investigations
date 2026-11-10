@@ -1,208 +1,105 @@
-# [SOC-225] Identity Threat: Acceso no autorizado y sospecha de Brute Force
+# [SOC257 · EventID 225] VPN connection from unauthorized country
 
-## 1. Triage Inicial
+LetsDefend (SOC simulator) · Alert: 13 Feb 2024 · Investigated: May 2026 · Level: Security Analyst
 
-| Campo | Valor |
+**Verdict: True Positive** (unauthorized access attempt with valid credentials, blocked by MFA) · Final severity: **Medium** (alert: Low)
+
+## 1. Alert
+
+![Alert](img/alert.jpeg)
+
+| Field | Value |
 |---|---|
-| Fecha de Alerta | 13 de febrero de 2024 - 02:04 AM |
-| Usuario Afectado | monica@letsdefend.io |
-| Tipo de Alerta | VPN Connection Detected from Unauthorized Country |
-| Severidad Inicial | Low |
-| Severidad Final | Medium |
-| Veredicto | True Positive |
+| Rule | SOC257 - VPN Connection Detected from Unauthorized Country |
+| Event time | 13 Feb 2024, 02:04 AM |
+| Source → destination | 113.161.158.12 → 33.33.33.33 (`vpn-letsdefend.io`) |
+| User | monica@letsdefend.io |
 
-### Descripción
+## 2. Hypothesis
 
-Se detectó un intento de acceso no autorizado hacia el portal VPN corporativo desde un país no autorizado.  
-La investigación determinó que el atacante utilizó credenciales válidas comprometidas e intentó completar el proceso MFA mediante múltiples solicitudes OTP.
+Either Monica is travelling (benign), or someone else is using her credentials from abroad. If it is an attacker: expect no prior activity from that IP, a bad IP reputation, and failed or unusual MFA activity.
 
----
+## 3. Investigation
 
-# 2. Evidencia de la Alerta
+**Log management:** all events from 113.161.158.12 to the VPN host:
 
-| Campo | Valor |
-|---|---|
-| IP Origen | 113.161.158.12 |
-| Destino | vpn-letsdefend.io |
-| Destination Address | 33.33.33.33 |
-| Timestamp | 13/Feb/2024:02:02:13 +0000 |
-| Método HTTP | POST |
-| URI | logon.html |
-| Protocolo | HTTP/1.0 |
-
-### Raw Log
+![Log management](img/log-management.jpeg)
 
 ```log
-Date=13/Feb/2024:02:02:13+0000,
-URL=https://vpn-letsdefend.io,
-Source IP=113.161.158.12,
-Request=POST,
-URI=logon.html,
-Protocol=HTTP/1.0,
-Response Status=200,
-Username=Monica@letsdefend.io
+Date=13/Feb/2024:02:02:13+0000, URL=https://vpn-letsdefend.io, Source IP=113.161.158.12,
+Request=POST, URI=logon.html, Protocol=HTTP/1.0, Response Status=200, Username=Monica@letsdefend.io
 ```
 
----
+![Raw log](img/raw-log.jpeg)
 
-# 3. Investigación y Análisis
+Three `POST /logon.html` requests (02:01, 02:02, 02:03), two followed by an `Incorrect OTP Code` action. Two earlier connections (01:54, 01:59) from the same IP to non-standard ports carry no payload.
 
-## Threat Intelligence
+**Email security:** three consecutive emails from `security@letsdefend.io` to Monica, subject *Your One-Time Passcode (OTP)*, at 02:01, 02:02 and 02:03, each with a different code and the requester's details (IP 113.161.158.12, Hanoi, Chrome on Windows).
 
-Se consultó la IP `113.161.158.12` en:
+![Email security](img/email-security.jpeg)
 
-- AbuseIPDB
-- Herramienta interna de Threat Intelligence
+**Threat intelligence:**
+- AbuseIPDB: **4,651 reports**, but the current *Confidence of Abuse* is **0%**. The ISP is VNPT, a fixed-line ISP in Vietnam (AS45899).
+- The internal threat-intel tool had already tagged the IP for brute force.
 
-Se encontro que la IP ya estaba detectada anteriormente como "Brute force"
+![IP reputation](img/ip-reputation.jpeg)
 
----
+**Technical anomalies:** `HTTP/1.0` (modern browsers use HTTP/1.1 or HTTP/2) and the legacy `logon.html` endpoint suggest a script or tool, not a person in a browser.
 
-## Análisis de Correo Electrónico
+## 4. Findings and verdict
 
-Se detectaron 3 correos electrónicos consecutivos enviados desde:
+**True Positive.** The attacker had Monica's valid password (the portal moved on to the OTP step every time) and kept retrying the second factor. MFA stopped the login.
 
-```text
-security@letsdefend.io
-```
-
-Dirigidos al usuario:
-
-```text
-monica@letsdefend.io
-```
-
-Todos los correos contenían códigos OTP diferentes para autenticación MFA.
-
-### Contenido observado
-
-```text
-One-Time Passcode (OTP): XXXXX
-IP : 113.161.158.12
-Location : Hanoi, Ha Noi
-Browser : Chrome
-OS : Windows
-```
-
-### Hallazgo
-
-La generación de múltiples OTP indica que:
-
-- el atacante ya poseía credenciales válidas
-- intentó completar el segundo factor de autenticación
-- el MFA evitó el acceso exitoso
-
----
-
-## Análisis de Logs
-
-Durante la revisión en Log Management se detectó:
-
-- intento de autenticación a las 02:02 AM
-- evento posterior de `Incorrect OTP Code`
-- múltiples solicitudes OTP consecutivas
-
-### Hallazgos relevantes
-
-#### Uso de `logon.html`
-
-El endpoint observado:
-
-```text
-logon.html
-```
-
-corresponde a una estructura legacy poco común en infraestructuras modernas.
-
-#### Uso de `HTTP/1.0`
-
-El protocolo:
-
-```text
-HTTP/1.0
-```
-
-también resulta inusual para navegadores actuales, los cuales normalmente utilizan HTTP/1.1 o HTTP/2.
-
-### Conclusión Técnica
-
-La combinación de:
-
-- HTTP/1.0
-- requests automatizados
-- múltiples OTP
-- endpoint legacy
-
-sugiere el uso de herramientas automatizadas o scripts utilizados para:
-
-- credential stuffing
-- password spraying
-- ataques de fuerza bruta
-
----
-
-# 4. Evaluación de Impacto
-
-| Evaluación | Resultado |
+| Time (13 Feb 2024) | Event |
 |---|---|
-| Acceso VPN exitoso | No |
-| Compromiso de Endpoint | No evidenciado |
-| Movimiento lateral | No evidenciado |
+| 01:54, 01:59 | Connections from 113.161.158.12 to the VPN host on high ports (no payload) |
+| 02:01 | `POST /logon.html` → OTP email #1 → *Incorrect OTP Code* |
+| 02:02 | `POST /logon.html` → OTP email #2 → *Incorrect OTP Code* |
+| 02:03 | `POST /logon.html` → OTP email #3 |
+| 02:04 | SOC257 alert fires |
+
+| Impact check | Result |
+|---|---|
+| Successful VPN access | No |
 | MFA bypass | No |
+| Endpoint compromise / lateral movement | No evidence |
 
-### Mapeo MITRE ATT&CK
+## 5. IOCs
 
-| Táctica | Técnica |
-|---|---|
-| Initial Access | T1078 - Valid Accounts |
-| Credential Access | T1110 - Brute Force |
+Defanged.
 
----
+| Type | Value | Context |
+|---|---|---|
+| IP | `113.161.158[.]12` | Attacker source (VNPT, AS45899) |
+| User | `monica@letsdefend[.]io` | Compromised account (target) |
+| URL | `hxxps://vpn-letsdefend[.]io/logon.html` | Targeted VPN portal |
+| Protocol trait | `HTTP/1.0` requests to `logon.html` | Automation indicator (behavioral, not blockable alone) |
 
-# 5. Conclusión
+## 6. MITRE ATT&CK
 
-El incidente fue clasificado como:
+| Tactic | Technique | Evidence |
+|---|---|---|
+| Initial Access | T1078 Valid Accounts | Correct password accepted; login reached the OTP step |
+| Credential Access | T1621 Multi-Factor Authentication Request Generation | 3 OTP requests in 3 minutes |
+| Credential Access | T1110 Brute Force | Repeated OTP attempts; IP previously tagged for brute force |
 
-> True Positive - Intento de acceso no autorizado utilizando credenciales válidas comprometidas.
+## 7. Response and recommendations
 
-La evidencia indica que el atacante:
+Actions taken:
+- Blocked 113.161.158.12 at the perimeter.
+- Forced a password reset for Monica and revoked active sessions.
+- Notified the user and recommended changing reused passwords.
+- Added monitoring for VPN logins for the account.
 
-- poseía usuario y contraseña válidos
-- intentó autenticarse vía VPN
-- falló durante la validación MFA
+Recommendations:
+- Investigate *how* the password leaked (phishing, reuse, infostealer) before closing the case.
+- Rate-limit and lock OTP attempts per account; alert on ≥ 3 OTP requests in 5 minutes.
+- Move from email OTP to phishing-resistant MFA (FIDO2 / number matching).
+- Geo-restrict the VPN portal to countries where the company operates.
 
-El segundo factor de autenticación evitó el acceso a la red corporativa.
+## 8. What I learned
 
----
-
-# 6. Medidas de Mitigación
-
-## Acciones Ejecutadas
-
-- Bloqueo inmediato de la IP `113.161.158.12`
-- Reset forzado de contraseña del usuario afectado
-- Revocación de sesiones activas
-- Notificación al usuario
-- Recomendación de cambio de contraseñas reutilizadas
-- Monitoreo adicional de accesos VPN
-
----
-
-# 7. IOC (Indicators of Compromise)
-
-| Tipo | Valor |
-|---|---|
-| IP | 113.161.158.12 |
-| URL | https://vpn-letsdefend.io |
-| Usuario | monica@letsdefend.io |
-
----
-
-# 8. Resultado Final
-
-| Estado | Resultado |
-|---|---|
-| Clasificación | True Positive |
-| Impacto Final | Bajo |
-| Acceso Exitoso | No |
-| Contención | Exitosa |
+- MFA failing is not the end of the case: the password is still compromised and must be reset.
+- AbuseIPDB's report count and confidence score answer different questions. 4,651 historical reports with 0% current confidence means "known bad in the past, not reported recently", which still matters for a VPN login at 2 AM.
+- Protocol details (`HTTP/1.0`, legacy endpoints) are cheap but strong signals of automation.
+- Correlating sources (proxy logs + email security + threat intel) turned a *Low* geo alert into a confirmed credential compromise.

@@ -95,7 +95,8 @@ Defanged. Source in brackets.
 
 ## 8. What I learned
 
-- **Detected ≠ blocked.** Always read the EDR action field: here the payload ran.
-- Script block logs show what a script *does*; process logs alone showed only "PowerShell ran". The second-stage URL was only visible there.
-- A hosting provider (S3) in the URL does not make it trustworthy: attackers use legitimate cloud storage to evade domain reputation checks.
-- MITRE tactics and techniques are different layers: *Ingress Tool Transfer* is a technique under the *Command and Control* tactic, not a tactic itself.
+- In my first version I wrote that the file hash was "not identified", but it was right there in the alert. Now I read every field of the alert before pivoting to external tools.
+- The process log only told me "PowerShell ran". The second-stage download (`IEX(IWR …sd2.ps1)`) was only visible in the script block view, so I check script block logs every time PowerShell is involved.
+- The EDR action said **Detected**, not blocked. I had assumed the payload was stopped; it was not.
+- I had listed *Ingress Tool Transfer* as a tactic. It is a technique under *Command and Control*. I now check the ATT&CK matrix instead of mapping from memory.
+- I had no sandbox, so I could not confirm everything the script did. Instead of guessing, I contained the host and escalated with the evidence I had.

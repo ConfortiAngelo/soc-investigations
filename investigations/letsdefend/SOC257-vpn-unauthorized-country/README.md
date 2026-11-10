@@ -99,7 +99,7 @@ Recommendations:
 
 ## 8. What I learned
 
-- MFA failing is not the end of the case: the password is still compromised and must be reset.
-- AbuseIPDB's report count and confidence score answer different questions. 4,651 historical reports with 0% current confidence means "known bad in the past, not reported recently", which still matters for a VPN login at 2 AM.
-- Protocol details (`HTTP/1.0`, legacy endpoints) are cheap but strong signals of automation.
-- Correlating sources (proxy logs + email security + threat intel) turned a *Low* geo alert into a confirmed credential compromise.
+- What first looked wrong to me was `HTTP/1.0` and `logon.html`: real browsers do not log in like that. Small protocol details are a quick way to spot automation.
+- The three OTP emails only made sense when I put the email logs next to the proxy logs. One source alone looked like a normal login.
+- MFA stopped the attacker, but the password was already compromised, so the reset and session revocation were still necessary. Blocked does not mean closed.
+- AbuseIPDB showed 4,651 reports with 0% confidence. I learned to read both numbers: lots of history, but no recent reports.

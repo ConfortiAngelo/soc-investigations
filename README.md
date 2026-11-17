@@ -3,9 +3,8 @@
 Junior SOC analyst in training. Practice write-ups on alert triage, phishing analysis and log analysis.
 
 ## How cases are documented
-Every case follows the same structure: [TEMPLATE.md](TEMPLATE.md).
-The workflow is always: **alert → hypothesis → evidence → verdict → escalation decision**.
-<!-- METHODOLOGY link pending -->
+Every case follows the same process, described in [METHODOLOGY.md](METHODOLOGY.md): **alert → hypothesis → evidence → verdict → escalation decision**.
+Each write-up uses the same structure: [TEMPLATE.md](TEMPLATE.md).
 
 ```
 investigations/

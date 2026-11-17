@@ -14,7 +14,7 @@ soc-investigations/
 ├── CLAUDE.md
 ├── README.md            ← who I am, index of cases, disclaimer
 ├── TEMPLATE.md          ← write-up template
-├── METHODOLOGY.md       ← under review, see "Methodology" below
+├── METHODOLOGY.md       ← investigation process, see "Methodology" below
 ├── LICENSE
 ├── .gitignore           ← must include notes/
 ├── notes/               ← my raw notes, one file per case, NEVER committed
@@ -82,7 +82,7 @@ Table columns: `# | Title | Type | Platform | ATT&CK | Verdict | Link`. Newest c
 - No `Co-Authored-By` trailers or AI attribution in commits or PR descriptions. The author is the only contributor.
 
 ## Methodology
-`METHODOLOGY.md` is under review. Until it exists, every case follows: alert → hypothesis → evidence → verdict → escalation decision. Once `METHODOLOGY.md` exists, it overrides this section.
+Every case follows `METHODOLOGY.md`: alert → hypothesis → evidence → verdict → escalation decision. When reviewing my reasoning, check it against that file.
 
 ## Never
 - Secrets, tokens or personal data.

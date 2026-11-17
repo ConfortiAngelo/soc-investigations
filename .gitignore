@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.db
+*.sqlite
+*.log
+output/
+.DS_Store
+.vscode/
+.idea/
+
+# Raw investigation notes, never committed
+notes/

@@ -6,8 +6,8 @@ Alert triage and incident write-ups from SOC training platforms (LetsDefend, Cyb
 
 | Case | Platform | Type | Verdict | ATT&CK | Write-up |
 |---|---|---|---|---|---|
-| SOC153 · Suspicious PowerShell script executed | LetsDefend | Malware / execution | TP · High | T1204.002, T1059.001, T1059.003, T1105, T1071.001 | [read](investigations/letsdefend/SOC153-suspicious-powershell-script/) |
-| SOC257 · VPN connection from unauthorized country | LetsDefend | Identity / unauthorized access | TP · Medium | T1078, T1621, T1110 | [read](investigations/letsdefend/SOC257-vpn-unauthorized-country/) |
+| SOC153 · Suspicious PowerShell script executed | LetsDefend | Malware / execution | TP · High | T1204.002, T1059.001, T1059.003, T1105, T1071.001 | [read](investigations/002-malware-powershell-download-cradle/) |
+| SOC257 · VPN connection from unauthorized country | LetsDefend | Identity / unauthorized access | TP · Medium | T1078, T1621, T1110 | [read](investigations/001-unauthorized-access-vpn-foreign-login/) |
 
 ## How each case is written
 

@@ -6,7 +6,7 @@ LetsDefend (SOC simulator) · Alert: 13 Feb 2024 · Investigated: May 2026 · Le
 
 ## 1. Alert
 
-![Alert](img/alert.jpeg)
+![Alert](img/001-alert.jpeg)
 
 | Field | Value |
 |---|---|
@@ -23,26 +23,26 @@ Either Monica is travelling (benign), or someone else is using her credentials f
 
 **Log management:** all events from 113.161.158.12 to the VPN host:
 
-![Log management](img/log-management.jpeg)
+![Log management](img/001-log-management.jpeg)
 
 ```log
 Date=13/Feb/2024:02:02:13+0000, URL=https://vpn-letsdefend.io, Source IP=113.161.158.12,
 Request=POST, URI=logon.html, Protocol=HTTP/1.0, Response Status=200, Username=Monica@letsdefend.io
 ```
 
-![Raw log](img/raw-log.jpeg)
+![Raw log](img/001-raw-log.jpeg)
 
 Three `POST /logon.html` requests (02:01, 02:02, 02:03), two followed by an `Incorrect OTP Code` action. Two earlier connections (01:54, 01:59) from the same IP to non-standard ports carry no payload.
 
 **Email security:** three consecutive emails from `security@letsdefend.io` to Monica, subject *Your One-Time Passcode (OTP)*, at 02:01, 02:02 and 02:03, each with a different code and the requester's details (IP 113.161.158.12, Hanoi, Chrome on Windows).
 
-![Email security](img/email-security.jpeg)
+![Email security](img/001-email-security.jpeg)
 
 **Threat intelligence:**
 - AbuseIPDB: **4,651 reports**, but the current *Confidence of Abuse* is **0%**. The ISP is VNPT, a fixed-line ISP in Vietnam (AS45899).
 - The internal threat-intel tool had already tagged the IP for brute force.
 
-![IP reputation](img/ip-reputation.jpeg)
+![IP reputation](img/001-ip-reputation.jpeg)
 
 **Technical anomalies:** `HTTP/1.0` (modern browsers use HTTP/1.1 or HTTP/2) and the legacy `logon.html` endpoint suggest a script or tool, not a person in a browser.
 

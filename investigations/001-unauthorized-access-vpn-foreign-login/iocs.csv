@@ -1,0 +1,4 @@
+type,value,context
+ip,113.161.158[.]12,"Attacker source (VNPT, AS45899)"
+email,monica[@]letsdefend[.]io,Compromised account (target)
+url,hxxps://vpn-letsdefend[.]io/logon.html,Targeted VPN portal

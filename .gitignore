@@ -15,5 +15,7 @@ output/
 .vscode/
 .idea/
 
-# Raw investigation notes, never committed
+# Raw notes, exported PDFs and extracted files, never committed
 notes/
+inbox/
+work/

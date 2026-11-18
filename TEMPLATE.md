@@ -13,8 +13,9 @@ Multi-alert scenarios: queue summary (total alerts, true/false positives, common
 ## 2. Hypothesis
 What could this be? What would confirm or rule it out?
 
-## 3. Data sources
-Logs, mail headers, PCAP, EDR telemetry, threat intel used.
+## 3. Environment and data sources
+Environment: the (fictional) organization, its internal IP range and which log sources exist (and which don't, e.g. no EDR).
+Data sources: logs, mail headers, PCAP, EDR telemetry, threat intel used.
 
 ## 4. Investigation
 Step by step: queries run (SPL / KQL / filters), tools used, what each result showed.
@@ -22,6 +23,7 @@ Screenshots in ./img (no personal data).
 
 ## 5. Findings and verdict
 True positive / false positive, and why. Timeline of events.
+Affected entities: user → host → IP, only those involved.
 
 ## 6. Escalation decision
 Close or escalate to L2, and why.

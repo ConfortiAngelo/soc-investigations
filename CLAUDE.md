@@ -16,8 +16,10 @@ soc-investigations/
 ├── TEMPLATE.md          ← write-up template
 ├── METHODOLOGY.md       ← investigation process, see "Methodology" below
 ├── LICENSE
-├── .gitignore           ← must include notes/
-├── notes/               ← my raw notes, one file per case, NEVER committed
+├── .gitignore           ← must include notes/, inbox/ and work/
+├── inbox/NNN/           ← my investigations exported as PDFs, NEVER committed
+├── work/NNN/            ← text and images extracted from the PDFs, NEVER committed
+├── notes/               ← case notes built from the PDFs, one file per case, NEVER committed
 │   └── NNN.md
 └── investigations/
     └── NNN-<type>-<short-slug>/
@@ -30,11 +32,20 @@ soc-investigations/
 1. **New case** (when I say "new case <type> <platform> <scenario>"):
    - Use the next free number: `NNN-<type>-<short-slug>`, e.g. `001-phishing-intro-soc-sim`.
    - Create the folder, copy `TEMPLATE.md` as `README.md`, create `iocs.csv` with the header `type,value,context`, and create `img/`.
-   - Create `notes/NNN.md` with these sections: Alert queue (one line per alert: ID · what it was · my verdict · key evidence) · Timeline of what I did · Queries and filters · Observations · Evidence (screenshot names) · Open questions · Platform write-up policy.
-2. **Investigating**: I write raw notes in `notes/NNN.md` while I work. Don't touch the write-up yet. Tidy the notes only if I ask.
-3. **Draft** (when I say "draft NNN"): fill `README.md` only from my notes. In multi-alert scenarios, ask me which alert(s) to use for the deep dive, and publish only aggregate counts for the rest of the queue. Anything missing becomes `{{TODO: ...}}` and you ask me. Never invent queries, timestamps, hashes, IPs, sender addresses or results.
-4. **Review** (when I say "review NNN"): run the quality checklist below and report each item as pass or fail, with what to fix.
-5. **Publish**: add the case to the README index, then commit and push, only with my approval.
+   - Create `inbox/NNN/` for my PDFs.
+2. **Investigating**: I investigate and write my notes in Google Docs, in Spanish: one doc per alert (`ALERTA_1.pdf` … `ALERTA_N.pdf`) and one with the lab's company information (`COMPANY_INFORMATION_*.pdf`). I export them as PDFs to `inbox/NNN/`. Don't touch the write-up yet.
+3. **Intake** (when I say "intake NNN"):
+   1. **Extract**: text with `pdftotext -layout` into `work/NNN/`, images with `pdfimages -png` into `work/NNN/img/`. If poppler is not installed, use PyMuPDF.
+   2. **Look at every extracted image.** The key evidence is only in the screenshots: alert ID and name, severity, timestamp, sender, recipient, URLs, IPs, ports, firewall action, exact Splunk queries and TryDetectThis results. My text describes it only partially.
+   3. **Build `notes/NNN.md` in Spanish**, one section per alert, identified by its simulator alert ID (e.g. 8815), not by the PDF name. Each section has: metadata (from the screenshots) · my steps · my verdict and my case report fields · evidence list with the image file name for each item.
+   4. **Use the company information as scenario context**: for the "Environment" part of the write-up (fictional company, available log sources, internal IP range), to tell internal from external traffic, and to map recipient → host → IP for "Affected entities" instead of "the employee's computer". Never publish the full employee table: only the entities involved in the case.
+   5. **Cross-check before drafting**: compare my notes with the screenshots and list inconsistencies (mistyped dates, times that do not match, AM/PM), empty case report fields, alerts without a verdict, and reasoning without evidence. Never fill in a verdict yourself: ask me.
+   Stop after the cross-check and wait for "draft NNN".
+4. **Draft** (when I say "draft NNN"): fill `README.md` only from `notes/NNN.md` and the screenshots. In multi-alert scenarios, ask me which alert(s) to use for the deep dive, and publish only aggregate counts for the rest of the queue. Anything missing becomes `{{TODO: ...}}` and you ask me. Never invent queries, timestamps, hashes, IPs, sender addresses or results.
+   - **Translation**: translate my Spanish notes into English without silently improving my reasoning. If something is weak, ask me instead of fixing it.
+   - **Screenshots for `img/`**: pick the ones that show my analysis (queries, results). Avoid the ones that only copy platform content (full email bodies).
+5. **Review** (when I say "review NNN"): run the quality checklist below and report each item as pass or fail, with what to fix.
+6. **Publish**: add the case to the README index, then commit and push, only with my approval.
 
 ## Quality checklist
 - [ ] The TL;DR is understandable in 30 seconds
@@ -43,6 +54,7 @@ soc-investigations/
 - [ ] IOCs are defanged and also listed in `iocs.csv`
 - [ ] Every ATT&CK ID was checked on attack.mitre.org
 - [ ] Screenshots show no personal data
+- [ ] Only the employees, hosts and IPs involved in the case are named (no full employee table)
 - [ ] The platform allows public write-ups for this scenario (noted in `notes/NNN.md`)
 - [ ] No flags, exact answers or copied platform content
 - [ ] English reviewed

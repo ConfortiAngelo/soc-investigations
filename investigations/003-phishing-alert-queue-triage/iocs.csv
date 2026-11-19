@@ -1,0 +1,9 @@
+type,value,context
+email,no-reply[@]m1crosoftsupport[.]co,8817 sender
+domain,m1crosoftsupport[.]co,8817 lookalike Microsoft domain (MALICIOUS)
+url,hxxps://m1crosoftsupport[.]co/login,8817 fake login page (connection allowed)
+ip,45[.]148[.]10[.]131,8817 destination IP (MALICIOUS)
+email,urgents[@]amazon[.]biz,8815 sender
+domain,amazon[.]biz,8815 sender domain
+url,hxxp://bit[.]ly/3sHkX3da12340,8815/8816 shortened link (MALICIOUS; connection blocked)
+ip,67[.]199[.]248[.]11,8815/8816 destination IP; shared Bitly infrastructure - do not block

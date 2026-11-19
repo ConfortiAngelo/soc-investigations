@@ -19,12 +19,14 @@ investigations/
 |---|---|---|---|---|---|---|
 | 001 | SOC257 · VPN connection from an unauthorized country | Unauthorized access | LetsDefend | T1078, T1621, T1110 | True positive · Escalated | [read](investigations/001-unauthorized-access-vpn-foreign-login/) |
 | 002 | SOC153 · Suspicious PowerShell script with a download cradle | Malware | LetsDefend | T1204.002, T1059.001, T1059.003, T1105, T1071.001 | True positive · Escalated | [read](investigations/002-malware-powershell-download-cradle/) |
+| 003 | Phishing alert queue triage (5 alerts) | Phishing | TryHackMe SOC Simulator | T1566.002, T1598.003, T1204.001 | 3 TP · 2 FP · Escalated | [read](investigations/003-phishing-alert-queue-triage/) |
 
 ## Tools
 Listed as they are used in published cases.
 - LetsDefend SOC simulator: Log Management, Email Security, Threat Intel, endpoint data (browser history, process logs, PowerShell script block logging)
 - VirusTotal, Cisco Talos, MalwareBazaar: URL and file hash reputation
 - AbuseIPDB: IP reputation
+- TryHackMe SOC Simulator: Splunk (email, firewall and WAF logs), TryDetectThis (simulated VirusTotal) for URL and IP reputation
 
 ## Disclaimer
 - All cases use simulated data from free training platforms (TryHackMe SOC Simulator, LetsDefend, CyberDefenders, Blue Team Labs Online).

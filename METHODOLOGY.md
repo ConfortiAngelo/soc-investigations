@@ -63,7 +63,7 @@ Some scenarios (for example, TryHackMe SOC Simulator) generate a queue of 20 to 
 - Triage the queue by severity first, then by time.
 - Group alerts that share a pattern: same sender, domain, subject, URL or attachment.
 - Keep one line per alert in private notes: ID, what it was, verdict, key evidence.
-- The write-up publishes the queue summary (totals, true and false positives, common patterns) and a deep dive on the most representative alert(s). It does not publish a verdict for every alert.
+- The write-up publishes the queue summary (totals, true and false positives, common patterns), a queue table with every alert (ID, rule, what it was, verdict, escalated, key evidence) and a deep dive on the most representative alert(s). If the platform forbids publishing per-alert verdicts, it publishes only the totals and the deep dive.
 
 ## 9. Before publishing
 - The platform allows public write-ups for that scenario or lab.
